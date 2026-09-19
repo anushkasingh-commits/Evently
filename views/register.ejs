@@ -1,0 +1,30 @@
+<%- include('partials/header',{title}) %>
+    <div class="auth-page">
+        <div class="auth-visual alt">
+            <div class="auth-logo">✦ evently</div>
+            <div class="auth-copy"><span class="eyebrow">MAKE ROOM FOR IDEAS</span>
+                <h1>Your event.<br><em>Your space.</em></h1>
+                <p>Search, schedule, request and celebrate—with every booking detail in one place.</p>
+            </div>
+            <div class="mini-calendar"><span>SEP 2026</span><b>25</b><i>FRI · AURORA AUDITORIUM</i></div>
+        </div>
+        <div class="auth-panel"><a class="mobile-brand" href="/">✦ evently</a>
+            <div class="auth-box"><span class="eyebrow">GET STARTED</span>
+                <h2>Create account.</h2>
+                <p>Organise your next moment in a few clicks.</p>
+                <% if(error){%>
+                    <div class="alert danger">
+                        <%= error %>
+                    </div>
+                    <%}%>
+                        <form method="post" action="/register" class="form"><label>Full name<input name="name" required
+                                    value="<%= form?.name||'' %>" placeholder="Your name"></label><label>Email<input
+                                    name="email" type="email" required value="<%= form?.email||'' %>"
+                                    placeholder="you@example.com"></label><label>Password<input name="password"
+                                    type="password" required minlength="6"
+                                    placeholder="At least 6 characters"></label><button
+                                class="btn btn-primary btn-block btn-lg">Create my account ↗</button></form>
+                        <p class="auth-switch">Already have an account? <a href="/login">Sign in →</a></p>
+            </div>
+        </div>
+    </div>

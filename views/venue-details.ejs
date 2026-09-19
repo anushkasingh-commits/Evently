@@ -1,0 +1,105 @@
+<%- include('partials/header',{title}) %><%- include('partials/navbar') %>
+        <% const coverImg=(venue.images && venue.images.length) ? venue.images[0]
+            : 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=1400&q=80' ; %>
+            <main class="page"><a href="/venues" class="back">← Back to spaces</a>
+                <section class="venue-detail">
+                    <div class="detail-photo" style="background-image:url('<%= coverImg %>')"><span
+                            class="photo-label">EVENTLY SPACE</span></div>
+                    <div class="detail-copy">
+                        <div class="venue-kicker"><span>
+                                <%= venue.location %> · <%= venue.floor %>
+                            </span><span>
+                                <%= money(venue.hourlyRate) %>/hr
+                            </span></div>
+                        <h1>
+                            <%= venue.name %>
+                        </h1>
+                        <p class="lead">
+                            <%= venue.description %>
+                        </p>
+                        <div class="detail-facts">
+                            <div><b>
+                                    <%= venue.capacity %>
+                                </b><span>capacity</span></div>
+                            <div><b>
+                                    <%= venue.openingTime %>–<%= venue.closingTime %>
+                                </b><span>open hours</span></div>
+                            <div><b>
+                                    <%= venue.roomNumber||'—' %>
+                                </b><span>room</span></div>
+                        </div>
+                        <div class="chips large">
+                            <% venue.facilities.forEach(f=>{ %><span>✓ <%= f %></span>
+                                <% }) %>
+                        </div>
+                        <% if(currentUser){%>
+                            <form method="post" action="/venues/<%= venue._id %>/favorite"><button
+                                    class="text-link favorite">♡ Save to favourites</button></form>
+                            <%}%>
+                    </div>
+                </section>
+                <% if((venue.images||[]).length>1){%><div class="gallery-strip">
+                        <% venue.images.forEach(img=>{%><div style="background-image:url('<%= img %>')"></div>
+                            <%})%>
+                    </div>
+                    <%}%>
+                        <section class="booking-layout">
+                            <div class="calendar-panel">
+                                <div class="section-head small">
+                                    <div><span class="eyebrow">LIVE AVAILABILITY</span>
+                                        <h2>Plan the slot.</h2>
+                                    </div><input id="availabilityDate" type="date" value="<%= date %>"
+                                        data-venue="<%= venue._id %>">
+                                </div>
+                                <div id="slotTimeline" class="timeline">
+                                    <div class="timeline-loading">Loading availability…</div>
+                                </div>
+                                <div class="legend"><span><i class="dot free"></i> Available</span><span><i
+                                            class="dot pending"></i> Pending</span><span><i class="dot booked"></i>
+                                        Booked</span><span><i class="dot maintenance"></i> Maintenance</span></div>
+                            </div>
+                            <div class="booking-card"><span class="eyebrow">REQUEST THIS SPACE</span>
+                                <h2>Make it official.</h2>
+                                <form class="form" method="post" action="/bookings" id="bookingForm"><input
+                                        type="hidden" name="venueId" value="<%= venue._id %>"><input type="hidden"
+                                        name="facilitiesRequested" id="facilitiesRequested"><label>Event name<input
+                                            name="eventName" required placeholder="e.g. AI Club Showcase"></label>
+                                    <div class="form-grid"><label>Event type<select name="eventType">
+                                                <option>Conference</option>
+                                                <option>Workshop</option>
+                                                <option>Hackathon</option>
+                                                <option>Meetup</option>
+                                                <option>Fest</option>
+                                                <option>Meeting</option>
+                                                <option>Other</option>
+                                            </select></label><label>Expected attendees<input name="attendees"
+                                                type="number" min="1" max="<%= venue.capacity %>" required
+                                                placeholder="<%= venue.capacity %> max"></label></div><label>Date<input
+                                            name="date" id="bookDate" type="date"
+                                            min="<%= new Date().toISOString().slice(0,10) %>" value="<%= date %>"
+                                            required></label>
+                                    <div class="form-grid"><label>Start<input name="startTime" id="startTime"
+                                                type="time" value="10:00" required></label><label>End<input
+                                                name="endTime" id="endTime" type="time" value="12:00" required></label>
+                                    </div><label>What do you need?<div class="select-facilities">
+                                            <% venue.facilities.forEach(f=>{ %><label><input type="checkbox"
+                                                        value="<%= f %>"><span>
+                                                        <%= f %>
+                                                    </span></label>
+                                                <% })%>
+                                        </div></label><label>Repeat<select name="recurrence">
+                                            <option value="none">One time</option>
+                                            <option value="weekly">Weekly</option>
+                                            <option value="daily">Daily</option>
+                                        </select></label><label class="recurrence-count">Number of occurrences<input
+                                            name="recurrenceCount" type="number" min="1" max="12"
+                                            value="1"></label><label>Event note<textarea name="description" rows="3"
+                                            placeholder="Tell the venue manager anything useful…"></textarea></label>
+                                    <div class="estimate"><span>Estimated total</span><strong id="estimate">₹0</strong>
+                                    </div><button class="btn btn-primary btn-block btn-lg">Request booking
+                                        ↗</button><small class="form-note">Your request stays pending until the venue
+                                        manager approves it. Evently prevents overlapping slots server-side.</small>
+                                </form>
+                            </div>
+                        </section>
+            </main><%- include('partials/footer') %>

@@ -1,0 +1,111 @@
+<%- include('../partials/header',{title}) %><%- include('../partials/navbar') %>
+        <main class="page">
+            <div class="page-title-row">
+                <div><span class="eyebrow">ADMIN · SPACES</span>
+                    <h1>Shape the venue library.</h1>
+                </div><a href="/admin" class="btn btn-ghost">← Command centre</a>
+            </div>
+            <section class="admin-two-col">
+                <div class="panel">
+                    <div class="panel-head">
+                        <div><span class="eyebrow">VENUE CRUD</span>
+                            <h2>Add a new space.</h2>
+                        </div>
+                    </div>
+                    <form class="form" method="post" action="/admin/venues">
+                        <div class="form-grid"><label>Name<input name="name" required
+                                    placeholder="Venue name"></label><label>Capacity<input name="capacity" type="number"
+                                    min="1" required placeholder="500"></label></div><label>Description<textarea
+                                name="description" rows="3"></textarea></label>
+                        <div class="form-grid"><label>Location<input name="location" required
+                                    placeholder="Main Block"></label><label>Room<input name="roomNumber"
+                                    placeholder="A-101"></label></div>
+                        <div class="form-grid"><label>Floor<input name="floor"
+                                    value="Ground Floor"></label><label>Hourly rate<input name="hourlyRate"
+                                    type="number" min="0" required placeholder="1500"></label></div>
+                        <div class="form-grid"><label>Opens<input name="openingTime" type="time"
+                                    value="08:00"></label><label>Closes<input name="closingTime" type="time"
+                                    value="22:00"></label></div><label>Facilities <small>comma separated</small><input
+                                name="facilities" placeholder="AC, Projector, Wi-Fi, Stage"></label><label>Image URLs
+                            <small>one per line</small><textarea name="images" rows="2"
+                                placeholder="https://..."></textarea><button class="btn btn-primary">Create venue
+                                ↗</button>
+                    </form>
+                </div>
+                <div class="panel">
+                    <div class="panel-head">
+                        <div><span class="eyebrow">MAINTENANCE</span>
+                            <h2>Block a slot.</h2>
+                        </div>
+                    </div>
+                    <form class="form" method="post" action="/admin/maintenance"><label>Venue<select name="venueId">
+                                <% venues.filter(v=>v.active).forEach(v=>{ %><option value="<%= v._id %>">
+                                        <%= v.name %>
+                                    </option>
+                                    <% })%>
+                            </select></label>
+                        <div class="form-grid"><label>Date<input name="date" type="date"
+                                    min="<%= new Date().toISOString().slice(0,10) %>"
+                                    required></label><label>Reason<input name="reason" required
+                                    placeholder="AV maintenance"></label></div>
+                        <div class="form-grid"><label>Start<input name="startTime" type="time"
+                                    required></label><label>End<input name="endTime" type="time" required></label></div>
+                        <button class="btn btn-dark">Block maintenance window</button>
+                    </form>
+                    <div class="maintenance-list">
+                        <% maintenance.forEach(m=>{ %><div><b>
+                                    <%= m.venue.name %>
+                                </b><span>
+                                    <%= dateFmt(m.date) %> · <%= timeFmt(m.startTime) %>–<%= timeFmt(m.endTime) %>
+                                </span><small>
+                                    <%= m.reason %>
+                                </small>
+                                <form method="post" action="/admin/maintenance/<%= m._id %>/delete"><button
+                                        class="icon-btn">×</button></form>
+                            </div>
+                            <%})%>
+                    </div>
+                </div>
+            </section>
+            <section>
+                <div class="panel-head page-subhead">
+                    <div><span class="eyebrow">LIVE LIBRARY</span>
+                        <h2>Existing spaces.</h2>
+                    </div>
+                </div>
+                <div class="admin-venue-list">
+                    <% venues.forEach(v=>{ %><details class="venue-edit">
+                            <summary>
+                                <div><b>
+                                        <%= v.name %>
+                                    </b><span>
+                                        <%= v.capacity %> seats · <%= money(v.hourlyRate) %>/hr · <%=
+                                                    v.active?'LIVE':'ARCHIVED' %>
+                                    </span></div><span>⌄</span>
+                            </summary>
+                            <form method="post" action="/admin/venues/<%= v._id %>/update" class="form edit-form">
+                                <div class="form-grid"><label>Name<input name="name" value="<%= v.name %>"
+                                            required></label><label>Capacity<input name="capacity" type="number"
+                                            value="<%= v.capacity %>" required></label></div>
+                                <div class="form-grid"><label>Location<input name="location" value="<%= v.location %>"
+                                            required></label><label>Rate<input name="hourlyRate" type="number"
+                                            value="<%= v.hourlyRate %>" required></label></div>
+                                <label>Description<textarea
+                                        name="description"><%= v.description %></textarea></label><label>Facilities<input
+                                        name="facilities" value="<%= v.facilities.join(', ') %>"></label><label>Image
+                                    URLs<textarea name="images"><%= (v.images||[]).join('\n') %></textarea></label>
+                                <div class="form-grid"><label>Opening<input name="openingTime" type="time"
+                                            value="<%= v.openingTime %>"></label><label>Closing<input name="closingTime"
+                                            type="time" value="<%= v.closingTime %>"></label></div><label
+                                    class="switch"><input type="checkbox" name="active" <%=v.active?'checked':''
+                                        %>><span>Venue is active and bookable</span></label><button
+                                    class="btn btn-primary">Save changes</button>
+                            </form>
+                            <form method="post" action="/admin/venues/<%= v._id %>/archive"
+                                onsubmit="return confirm('Archive this venue?')"><button class="btn btn-danger">Archive
+                                    venue</button></form>
+                        </details>
+                        <%})%>
+                </div>
+            </section>
+        </main><%- include('../partials/footer') %>

@@ -1,0 +1,120 @@
+<%- include('partials/header',{title}) %><%- include('partials/navbar') %>
+        <main>
+            <section class="hero">
+                <div class="hero-copy">
+                    <div class="eyebrow"><span class="pulse"></span> THE EVENT SPACE, REIMAGINED</div>
+                    <h1>Where <em>big ideas</em><br>get a room.</h1>
+                    <p>Discover beautiful campus and community venues, see live availability, and turn a booking request
+                        into your next memorable event.</p>
+                    <div class="hero-actions"><a href="/venues" class="btn btn-primary btn-lg">Explore venues
+                            <span>↗</span></a><a href="/register" class="text-link">Host an event <span>→</span></a>
+                    </div>
+                    <div class="hero-stats">
+                        <div><strong>24/7</strong><span>request anytime</span></div>
+                        <div><strong>Live</strong><span>slot conflicts</span></div>
+                        <div><strong>Smart</strong><span>alternatives</span></div>
+                    </div>
+                </div>
+                <div class="hero-art">
+                    <div class="orb orb-a"></div>
+                    <div class="orb orb-b"></div>
+                    <div class="ticket">
+                        <div class="ticket-top"><span>EVENTLY</span><span>09·26</span></div>
+                        <div class="ticket-main"><span class="ticket-label">TONIGHT'S ENERGY</span><strong>MAKE<br>IT
+                                <i>HAPPEN.</i></strong></div>
+                        <div class="ticket-bottom"><span>BOOK • CREATE • GATHER</span><span>✦</span></div>
+                    </div>
+                    <div class="float-card card-one"><span>✓</span>
+                        <div><b>Slot secured</b><small>Conflict-free</small></div>
+                    </div>
+                    <div class="float-card card-two"><span>◈</span>
+                        <div><b>Smart match</b><small>3 alternatives found</small></div>
+                    </div>
+                </div>
+            </section>
+            <section class="section">
+                <div class="section-head">
+                    <div><span class="eyebrow">CURATED SPACES</span>
+                        <h2>Rooms with a reason.</h2>
+                    </div><a class="text-link" href="/venues">View all venues →</a>
+                </div>
+                <div class="venue-grid">
+                    <% venues.forEach(v=>{ 
+                        const coverImg = (v.images && v.images.length) ? v.images[0] : 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=1000&q=80';
+                    %><article class="venue-card"><a href="/venues/<%= v._id %>">
+                                <div class="venue-img"
+                                    style="background-image:url('<%= coverImg %>')">
+                                    <span class="img-chip">UP TO <%= v.capacity %></span></div>
+                            </a>
+                            <div class="venue-info">
+                                <div class="venue-kicker"><span>
+                                        <%= v.location %>
+                                    </span><span>
+                                        <%= money(v.hourlyRate) %>/hr
+                                    </span></div>
+                                <h3><a href="/venues/<%= v._id %>">
+                                        <%= v.name %>
+                                    </a></h3>
+                                <p>
+                                    <%= v.description.slice(0,100) %>
+                                        <%= v.description.length>100?'…':'' %>
+                                </p>
+                                <div class="chips">
+                                    <% v.facilities.slice(0,4).forEach(f=>{ %><span>
+                                            <%= f %>
+                                        </span>
+                                        <% }) %>
+                                </div>
+                            </div>
+                        </article>
+                        <% }) %>
+                </div>
+            </section>
+            <section class="split-section">
+                <div class="manifesto"><span class="eyebrow">BUILT FOR CAMPUS ENERGY</span>
+                    <h2>Less spreadsheet.<br><em>More spotlight.</em></h2>
+                    <p>From club meetups to 800-person showcases, Evently handles the unglamorous parts—availability,
+                        approvals, maintenance and conflicts—so organisers can focus on the event.</p><a
+                        class="btn btn-dark" href="/register">Start planning ↗</a>
+                </div>
+                <div class="feature-stack">
+                    <div class="feature-row"><span>01</span>
+                        <div><b>See the real picture</b>
+                            <p>Calendar-led availability makes booked, pending and maintenance slots obvious.</p>
+                        </div><i>↗</i>
+                    </div>
+                    <div class="feature-row"><span>02</span>
+                        <div><b>Never double-book</b>
+                            <p>Server-side overlap checks protect every venue and every time window.</p>
+                        </div><i>↗</i>
+                    </div>
+                    <div class="feature-row"><span>03</span>
+                        <div><b>Get a Plan B instantly</b>
+                            <p>Smart venue and time alternatives appear when the requested slot is unavailable.</p>
+                        </div><i>↗</i>
+                    </div>
+                </div>
+            </section>
+            <section class="upcoming section">
+                <div class="section-head">
+                    <div><span class="eyebrow">WHAT'S COMING UP</span>
+                        <h2>Energy on the calendar.</h2>
+                    </div>
+                </div>
+                <div class="event-strip">
+                    <% upcoming.forEach(b=>{ %><div class="event-mini">
+                            <div class="event-date"><strong>
+                                    <%= new Date(b.date).getDate() %>
+                                </strong><span>
+                                    <%= new Date(b.date).toLocaleString('en',{month:'short'}).toUpperCase() %>
+                                </span></div>
+                            <div><b>
+                                    <%= b.eventName %>
+                                </b><span>
+                                    <%= b.venue.name %> · <%= timeFmt(b.startTime) %>
+                                </span></div><span class="status approved">APPROVED</span>
+                        </div>
+                        <% }) %>
+                </div>
+            </section>
+        </main><%- include('partials/footer') %>

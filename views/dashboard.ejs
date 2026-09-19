@@ -1,0 +1,63 @@
+<%- include('partials/header',{title}) %><%- include('partials/navbar') %>
+        <main class="page">
+            <section class="dashboard-hero">
+                <div><span class="eyebrow">ORGANISER SPACE</span>
+                    <h1>Good morning, <em><%= currentUser.name.split(' ')[0] %>.</em></h1><p>Ready to make the next moment happen?</p></div><a class="btn btn-primary btn-lg" href="/venues">+ Find a venue</a></section><div class="stat-grid"><div class="stat-card"><span>UPCOMING</span><strong><%= upcoming.filter(x=>x.status==='approved').length %></strong><small>confirmed events</small>
+                </div>
+                <div class="stat-card"><span>PENDING</span><strong>
+                        <%= bookings.filter(x=>x.status==='pending').length %>
+                    </strong><small>awaiting approval</small></div>
+                <div class="stat-card"><span>COMPLETED</span><strong>
+                        <%= bookings.filter(x=>x.status==='completed').length %>
+                    </strong><small>moments delivered</small></div>
+                <div class="stat-card accent"><span>SPACES</span><strong>
+                        <%= venues.length %>
+                    </strong><small>ready to explore</small></div>
+                </div>
+                <section class="dashboard-grid">
+                    <div class="panel">
+                        <div class="panel-head">
+                            <div><span class="eyebrow">NEXT UP</span>
+                                <h2>Your calendar.</h2>
+                            </div><a href="/bookings">All bookings →</a>
+                        </div>
+                        <% if(!upcoming.length){%>
+                            <div class="empty-inline"><b>Your calendar is wide open.</b>
+                                <p>Find a space and send your first booking request.</p>
+                            </div>
+                            <%}%>
+                                <div class="booking-list">
+                                    <% upcoming.forEach(b=>{ %><a class="booking-row" href="/bookings/<%= b._id %>">
+                                            <div class="date-badge"><b>
+                                                    <%= new Date(b.date).getDate() %>
+                                                </b><span>
+                                                    <%= new
+                                                        Date(b.date).toLocaleString('en',{month:'short'}).toUpperCase()
+                                                        %>
+                                                </span></div>
+                                            <div class="booking-main"><b>
+                                                    <%= b.eventName %>
+                                                </b><span>
+                                                    <%= b.venue.name %> · <%= timeFmt(b.startTime) %>–<%=
+                                                                timeFmt(b.endTime) %>
+                                                </span></div><span class="status <%= b.status %>">
+                                                <%= b.status %>
+                                            </span><span class="row-arrow">↗</span>
+                                        </a>
+                                        <%})%>
+                                </div>
+                    </div>
+                    <aside class="panel dark-panel"><span class="eyebrow">YOUR UNREADS</span>
+                        <h2>Inbox.</h2>
+                        <div class="notice-list">
+                            <% if(!notifications.length){%>
+                                <p>No new notifications.</p>
+                                <%}%>
+                                    <% notifications.forEach(n=>{ %><div class="notice"><i>✦</i><span>
+                                                <%= n.message %>
+                                            </span></div>
+                                        <% })%>
+                        </div><a href="/notifications" class="btn btn-light btn-block">Open inbox →</a>
+                    </aside>
+                </section>
+        </main><%- include('partials/footer') %>

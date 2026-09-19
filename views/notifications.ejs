@@ -1,0 +1,32 @@
+<%- include('partials/header',{title}) %><%- include('partials/navbar') %>
+        <main class="page narrow">
+            <div class="page-title-row">
+                <div><span class="eyebrow">NOTIFICATIONS</span>
+                    <h1>Your inbox.</h1>
+                </div>
+                <form method="post" action="/notifications/read"><button class="btn btn-ghost">Mark all read</button>
+                </form>
+            </div>
+            <div class="notification-page">
+                <% notifications.forEach(n=>{ %><div class="notification-item <%= n.isRead?'':'unread' %>"><span
+                            class="notice-icon">✦</span>
+                        <div><b>
+                                <%= n.type.toUpperCase() %>
+                            </b>
+                            <p>
+                                <%= n.message %>
+                            </p><small>
+                                <%= new Date(n.createdAt).toLocaleString('en-IN') %>
+                            </small>
+                        </div>
+                    </div>
+                    <%})%>
+                        <% if(!notifications.length){%>
+                            <div class="empty-state">
+                                <div>◌</div>
+                                <h2>All quiet.</h2>
+                                <p>Booking updates will appear here.</p>
+                            </div>
+                            <%}%>
+            </div>
+        </main><%- include('partials/footer') %>

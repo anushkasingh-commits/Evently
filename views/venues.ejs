@@ -1,0 +1,89 @@
+<%- include('partials/header',{title}) %><%- include('partials/navbar') %>
+        <main class="page">
+            <section class="page-hero compact">
+                <div><span class="eyebrow">EXPLORE THE MAP</span>
+                    <h1>Find your <em>place.</em></h1>
+                    <p>Search by capacity, facilities, budget—or just tell us what you're planning.</p>
+                </div>
+                <div class="hero-note"><span>✦</span><b>
+                        <%= venues.length %>
+                    </b><small>spaces live now</small></div>
+            </section>
+            <section class="search-panel">
+                <form method="get" action="/venues" class="search-form">
+                    <div class="nl-search"><span>⌕</span><input name="nl" value="<%= filters.nl||'' %>"
+                            placeholder="Try: “300 people, projector and AC, under ₹2000”"><button
+                            class="btn btn-dark">Smart search</button></div>
+                    <div class="filter-row"><label>Capacity<input type="number" name="capacity" min="1"
+                                value="<%= filters.capacity||'' %>" placeholder="Min"></label><label>Max rate <input
+                                type="number" name="maxRate" min="0" value="<%= filters.maxRate||'' %>"
+                                placeholder="₹ / hour"></label><label>Date<input type="date" name="date"
+                                value="<%= filters.date||'' %>"></label><label>From<input type="time" name="startTime"
+                                value="<%= filters.startTime||'' %>"></label><label>To<input type="time" name="endTime"
+                                value="<%= filters.endTime||'' %>"></label><button class="btn btn-primary">Filter
+                            ↗</button></div>
+                    <div class="facility-filter"><span>Facilities</span>
+                        <% ['AC','Projector','Wi-Fi','Stage','Sound System','Microphones','Parking','Smart Board','Tables','Chairs','Lighting'].forEach(f=>{
+                            const selected=Array.isArray(filters.facility)?filters.facility.includes(f):filters.facility===f;
+                        %><label class="check-chip"><input type="checkbox" name="facility" value="<%= f %>" <%=selected?'checked':'' %>><span><%= f %></span></label>
+                        <%})%>
+                    </div>
+                </form>
+            </section>
+            <% if(filters.nl && parsed){%>
+                <div class="parsed"><span>SMART SEARCH UNDERSTOOD</span><b>
+                        <%= parsed.capacity ? (parsed.capacity + '+ people · ') : '' %><%= parsed.facilities.join(' · ') || 'Any facilities' %><%= parsed.maxRate ? (' · ≤ ' + money(parsed.maxRate) + '/hr') : '' %>
+                    </b><small>
+                        <%= parsed.startTime ? (timeFmt(parsed.startTime) + ' → ' + timeFmt(parsed.endTime)) : 'Pick a date/time to check availability' %>
+                    </small></div>
+                <%}%>
+                    <section class="venue-grid wide">
+                        <% if(!venues.length){%>
+                            <div class="empty-state">
+                                <div>⌁</div>
+                                <h2>No spaces matched.</h2>
+                                <p>Try a lower capacity, another facility, or a different budget.</p><a href="/venues"
+                                    class="btn btn-primary">Reset filters</a>
+                            </div>
+                            <%}%>
+                                <% venues.forEach(v=>{
+                                    const av=availability?.find(x=>x.venueId===v._id.toString());
+                                    const coverImg = (v.images && v.images.length) ? v.images[0] :
+                                    'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=1000&q=80';
+                                    %><article class="venue-card"><a
+                                            href="/venues/<%= v._id %>?date=<%= filters.date||new Date().toISOString().slice(0,10) %>">
+                                            <div class="venue-img" style="background-image:url('<%= coverImg %>')"><span
+                                                    class="img-chip">CAPACITY <%= v.capacity %></span>
+                                                <% if(av?.conflict){%><span class="availability-pill busy">SLOT
+                                                        BUSY</span>
+                                                    <%}else if(filters.date&&filters.startTime&&filters.endTime){%><span
+                                                            class="availability-pill free">SLOT FREE</span>
+                                                        <%}%>
+                                            </div>
+                                        </a>
+                                        <div class="venue-info">
+                                            <div class="venue-kicker"><span>
+                                                    <%= v.location %>
+                                                </span><strong>
+                                                    <%= money(v.hourlyRate) %>/hr
+                                                </strong></div>
+                                            <h3><a href="/venues/<%= v._id %>">
+                                                    <%= v.name %>
+                                                </a></h3>
+                                            <p>
+                                                <%= v.description %>
+                                            </p>
+                                            <div class="chips">
+                                                <% v.facilities.slice(0,5).forEach(f=>{ %><span>
+                                                        <%= f %>
+                                                    </span>
+                                                    <% }) %>
+                                            </div>
+                                            <div class="card-footer"><span>⌁ <%= v.openingTime %>–<%= v.closingTime %>
+                                                            </span><a href="/venues/<%= v._id %>"
+                                                    class="arrow-btn">↗</a></div>
+                                        </div>
+                                    </article>
+                                    <%})%>
+                    </section>
+        </main><%- include('partials/footer') %>

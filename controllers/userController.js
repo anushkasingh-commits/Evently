@@ -1,0 +1,4 @@
+const User = require('../models/User'); const Notification = require('../models/Notification');
+exports.toggleFavorite = async (req, res, next) => { try { const u = await User.findById(req.user._id); const id = req.params.id; const idx = u.favorites.findIndex(x => x.toString() === id); if (idx >= 0) u.favorites.splice(idx, 1); else u.favorites.push(id); await u.save(); res.redirect(req.get('referer') || '/venues') } catch (e) { next(e) } };
+exports.notifications = async (req, res, next) => { try { const notifications = await Notification.find({ user: req.user._id }).sort({ createdAt: -1 }).lean(); res.render('notifications', { title: 'Notifications', notifications }) } catch (e) { next(e) } };
+exports.readNotifications = async (req, res, next) => { try { await Notification.updateMany({ user: req.user._id }, { isRead: true }); res.redirect('/notifications') } catch (e) { next(e) } };

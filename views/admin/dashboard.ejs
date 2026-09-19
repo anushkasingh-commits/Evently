@@ -1,0 +1,104 @@
+<%- include('../partials/header',{title}) %><%- include('../partials/navbar') %>
+        <main class="page">
+            <section class="dashboard-hero admin-hero">
+                <div><span class="eyebrow">VENUE MANAGER · COMMAND CENTRE</span>
+                    <h1>Make the room<br><em>work harder.</em></h1>
+                    <p>One operational view for today's events, approvals, revenue and utilisation.</p>
+                </div>
+                <div class="hero-buttons"><a class="btn btn-primary" href="/admin/venues">Manage spaces</a><a
+                        class="btn btn-light" href="/admin/reports">Reports ↗</a></div>
+            </section>
+            <div class="stat-grid">
+                <div class="stat-card"><span>TODAY</span><strong>
+                        <%= todayEvents.length %>
+                    </strong><small>approved events</small></div>
+                <div class="stat-card"><span>PENDING</span><strong>
+                        <%= pending %>
+                    </strong><small>need review</small></div>
+                <div class="stat-card"><span>REVENUE</span><strong>
+                        <%= money(totalRevenue) %>
+                    </strong><small>approved + completed</small></div>
+                <div class="stat-card accent"><span>BOOKED HOURS</span><strong>
+                        <%= totalHours %>
+                    </strong><small>tracked hours</small></div>
+            </div>
+            <section class="dashboard-grid">
+                <div class="panel">
+                    <div class="panel-head">
+                        <div><span class="eyebrow">TODAY</span>
+                            <h2>On the floor.</h2>
+                        </div><a href="/admin/bookings">Manage →</a>
+                    </div>
+                    <div class="booking-list">
+                        <% todayEvents.forEach(b=>{ %><div class="booking-row">
+                                <div class="date-badge"><b>●</b><span>LIVE</span></div>
+                                <div class="booking-main"><b>
+                                        <%= b.eventName %>
+                                    </b><span>
+                                        <%= b.venue.name %> · <%= timeFmt(b.startTime) %>–<%= timeFmt(b.endTime) %> ·
+                                                    <%= b.organiser.name %>
+                                    </span></div><span class="status approved">APPROVED</span>
+                            </div>
+                            <%})%>
+                                <% if(!todayEvents.length){%>
+                                    <div class="empty-inline"><b>No events on the floor today.</b>
+                                        <p>Enjoy the calm before the next wave.</p>
+                                    </div>
+                                    <%}%>
+                    </div>
+                </div>
+                <aside class="panel dark-panel"><span class="eyebrow">CHECK-IN</span>
+                    <h2>Event entrance.</h2>
+                    <p>Enter a booking code to mark an approved event as checked in.</p>
+                    <form id="checkinForm" class="form"><label>Booking code<input name="bookingCode"
+                                placeholder="EVT-2026-ABCDE" required></label><button
+                            class="btn btn-light btn-block">Confirm check-in ↗</button></form>
+                    <div id="qr-reader" class="qr-reader"></div><button type="button" id="scanQr"
+                        class="btn btn-ghost btn-block">Use camera to scan QR</button>
+                    <div id="checkinResult"></div>
+                </aside>
+            </section>
+            <section class="analytics-grid">
+                <div class="panel">
+                    <div class="panel-head">
+                        <div><span class="eyebrow">SPACE HEALTH</span>
+                            <h2>Venue utilisation.</h2>
+                        </div>
+                    </div>
+                    <div class="util-list">
+                        <% utilisation.forEach(v=>{ %><div class="util-row">
+                                <div><b>
+                                        <%= v.name %>
+                                    </b><span>
+                                        <%= v.bookedHours %> booked hours
+                                    </span></div>
+                                <div class="bar"><i <%- `style="width: ${v.utilisation}%;"` %>></i></div><strong>
+                                    <%= v.utilisation %>%
+                                </strong>
+                            </div>
+                            <%})%>
+                    </div>
+                </div>
+                <div class="panel">
+                    <div class="panel-head">
+                        <div><span class="eyebrow">RECENT ACTIVITY</span>
+                            <h2>Audit trail.</h2>
+                        </div>
+                    </div>
+                    <div class="audit-list">
+                        <% logs.forEach(l=>{ %><div><span>
+                                    <%= l.action %>
+                                </span>
+                                <p><b>
+                                        <%= l.user?.name||'Admin' %>
+                                    </b> · <%= l.details||l.entity %>
+                                </p><small>
+                                    <%= new Date(l.createdAt).toLocaleString('en-IN') %>
+                                </small>
+                            </div>
+                            <%})%>
+                    </div>
+                </div>
+            </section>
+        </main>
+        <script src="https://unpkg.com/html5-qrcode"></script><%- include('../partials/footer') %>

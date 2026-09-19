@@ -1,0 +1,30 @@
+<%- include('partials/header',{title}) %>
+    <div class="auth-page">
+        <div class="auth-visual">
+            <div class="auth-logo">✦ evently</div>
+            <div class="auth-copy"><span class="eyebrow">YOUR NEXT ROOM IS WAITING</span>
+                <h1>Gather<br><em>beautifully.</em></h1>
+                <p>One place for venues, bookings, approvals and all the little details behind a great event.</p>
+            </div>
+            <div class="auth-quote">“The easiest part of planning the event was finding the right space.”</div>
+        </div>
+        <div class="auth-panel"><a class="mobile-brand" href="/">✦ evently</a>
+            <div class="auth-box"><span class="eyebrow">WELCOME BACK</span>
+                <h2>Sign in.</h2>
+                <p>Pick up where your next event begins.</p>
+                <% if(error){%>
+                    <div class="alert danger">
+                        <%= error %>
+                    </div>
+                    <%}%>
+                        <form method="post" action="/login" class="form"><label>Email<input name="email" type="email"
+                                    required value="<%= email||'' %>"
+                                    placeholder="you@example.com"></label><label>Password<input name="password"
+                                    type="password" required placeholder="••••••••"></label><button
+                                class="btn btn-primary btn-block btn-lg">Enter evently ↗</button></form>
+                        <div class="demo-box"><b>Demo access</b><span>Organiser: organiser@evently.demo ·
+                                Organiser@123</span><span>Admin: admin@evently.demo · Admin@123</span></div>
+                        <p class="auth-switch">New here? <a href="/register">Create an organiser account →</a></p>
+            </div>
+        </div>
+    </div>

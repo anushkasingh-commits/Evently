@@ -1,0 +1,49 @@
+<%- include('partials/header',{title}) %><%- include('partials/navbar') %>
+        <main class="page narrow">
+            <div class="conflict-hero"><span class="warning-icon">!</span><span class="eyebrow">SLOT CHECK</span>
+                <h1>That moment is already spoken for.</h1>
+                <p>We checked <b>
+                        <%= venue.name %>
+                    </b> and found a conflict. Here are the exact clashes and some smart Plan B options.</p>
+            </div>
+            <div class="conflicts">
+                <% conflicts.forEach(c=>{ %><div class="conflict-row"><span
+                            class="status <%= c.type==='maintenance'?'maintenance':'pending' %>">
+                            <%= c.type==='maintenance' ?'MAINTENANCE':'BOOKING' %>
+                        </span>
+                        <div><b>
+                                <%= dateFmt(c.date) %> · <%= form.startTime %>–<%= form.endTime %>
+                            </b>
+                            <p>
+                                <%= c.type==='maintenance' ? c.item.reason : ('Existing booking occupies ' + c.item.startTime + ' – ' + c.item.endTime) %>
+                            </p>
+                        </div>
+                    </div>
+                    <%})%>
+            </div>
+            <h2 class="recommend-title">Smart alternatives</h2>
+            <div class="alt-grid">
+                <% alternatives.forEach(v=>{ %><div class="alt-card">
+                        <div><span class="eyebrow">MATCH <%= v.score %>%</span>
+                            <h3>
+                                <%= v.name %>
+                            </h3>
+                            <p>
+                                <%= v.location %> · <%= v.capacity %> seats
+                            </p>
+                        </div>
+                        <div class="chips">
+                            <% v.matchedFacilities.slice(0,3).forEach(f=>{ %><span>✓ <%= f %></span>
+                                <% }) %>
+                        </div>
+                        <div class="alt-bottom"><b>
+                                <%= money(v.hourlyRate) %>/hr
+                            </b><a class="btn btn-dark btn-sm"
+                                href="/venues/<%= v._id %>?date=<%= new Date(form.date).toISOString().slice(0,10) %>">View
+                                space →</a></div>
+                    </div>
+                    <%})%>
+            </div>
+            <div class="center"><a class="btn btn-ghost" href="/venues/<%= venue._id %>">Change the time</a><a
+                    class="btn btn-primary" href="/venues">Explore all venues</a></div>
+        </main><%- include('partials/footer') %>

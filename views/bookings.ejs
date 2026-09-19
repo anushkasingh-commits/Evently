@@ -1,0 +1,57 @@
+<%- include('partials/header',{title}) %><%- include('partials/navbar') %>
+        <main class="page">
+            <section class="page-hero compact">
+                <div><span class="eyebrow">YOUR EVENT LEDGER</span>
+                    <h1>Every booking,<br><em>in one view.</em></h1>
+                </div><a href="/venues" class="btn btn-primary">+ New request</a>
+            </section>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Event</th>
+                            <th>Venue</th>
+                            <th>When</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% bookings.forEach(b=>{ %><tr>
+                                <td><b>
+                                        <%= b.eventName %>
+                                    </b><small>
+                                        <%= b.eventType %> · <%= b.bookingCode %>
+                                    </small></td>
+                                <td>
+                                    <%= b.venue.name %><small>
+                                            <%= b.venue.location %>
+                                        </small>
+                                </td>
+                                <td>
+                                    <%= dateFmt(b.date) %><small>
+                                            <%= timeFmt(b.startTime) %> – <%= timeFmt(b.endTime) %>
+                                        </small>
+                                </td>
+                                <td><b>
+                                        <%= money(b.totalAmount) %>
+                                    </b></td>
+                                <td><span class="status <%= b.status %>">
+                                        <%= b.status %>
+                                    </span></td>
+                                <td><a class="arrow-btn" href="/bookings/<%= b._id %>">↗</a></td>
+                            </tr>
+                            <%})%>
+                    </tbody>
+                </table>
+                <% if(!bookings.length){%>
+                    <div class="empty-state">
+                        <div>✦</div>
+                        <h2>No bookings yet.</h2>
+                        <p>Your next event is one search away.</p><a href="/venues" class="btn btn-primary">Explore
+                            venues</a>
+                    </div>
+                    <%}%>
+            </div>
+        </main><%- include('partials/footer') %>

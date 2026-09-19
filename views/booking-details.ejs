@@ -1,0 +1,54 @@
+<%- include('partials/header',{title}) %><%- include('partials/navbar') %>
+        <main class="page narrow"><a href="/bookings" class="back">← My bookings</a>
+            <div class="pass">
+                <div class="pass-head"><span>EVENTLY</span><span>
+                        <%= booking.bookingCode %>
+                    </span></div>
+                <div class="pass-title"><span class="eyebrow">EVENT PASS</span>
+                    <h1>
+                        <%= booking.eventName %>
+                    </h1>
+                    <p>
+                        <%= booking.description || 'A moment worth making.' %>
+                    </p>
+                </div>
+                <div class="pass-grid">
+                    <div><span>VENUE</span><b>
+                            <%= booking.venue.name %>
+                        </b><small>
+                            <%= booking.venue.location %>
+                        </small></div>
+                    <div><span>DATE</span><b>
+                            <%= dateFmt(booking.date) %>
+                        </b><small>
+                            <%= timeFmt(booking.startTime) %> – <%= timeFmt(booking.endTime) %>
+                        </small></div>
+                    <div><span>GUESTS</span><b>
+                            <%= booking.attendees %>
+                        </b><small>people expected</small></div>
+                    <div><span>ESTIMATE</span><b>
+                            <%= money(booking.totalAmount) %>
+                        </b><small>
+                            <%= booking.durationHours %> hours
+                        </small></div>
+                </div>
+                <div class="pass-bottom"><span class="status <%= booking.status %>">
+                        <%= booking.status %>
+                    </span>
+                    <div class="real-qr"><img src="<%= qr %>" alt="Booking QR code"><small>SCAN / CHECK-IN</small></div>
+                </div>
+            </div>
+            <div class="detail-actions"><a class="btn btn-ghost" href="/venues/<%= booking.venue._id %>">View
+                    venue</a><a class="btn btn-dark" href="/bookings/<%= booking._id %>/confirm.pdf">Download
+                    confirmation ↓</a>
+                <% if(['pending','approved'].includes(booking.status)){%>
+                    <form method="post" action="/bookings/<%= booking._id %>/cancel"
+                        onsubmit="return confirm('Cancel this booking?')"><button class="btn btn-danger">Cancel
+                            booking</button></form>
+                    <%}%>
+            </div>
+            <% if(booking.rejectionReason){%>
+                <div class="alert danger">Rejected: <%= booking.rejectionReason %>
+                </div>
+                <%}%>
+        </main><%- include('partials/footer') %>

@@ -1,0 +1,62 @@
+<%- include('../partials/header',{title}) %><%- include('../partials/navbar') %>
+        <main class="page">
+            <div class="page-title-row">
+                <div><span class="eyebrow">ADMIN · REPORTING</span>
+                    <h1>The numbers behind<br><em>the moments.</em></h1>
+                </div><a class="btn btn-primary" href="/admin/reports.csv">Export CSV ↓</a>
+            </div>
+            <div class="stat-grid">
+                <div class="stat-card"><span>TRACKED REVENUE</span><strong>
+                        <%= money(total) %>
+                    </strong><small>approved + completed</small></div>
+                <div class="stat-card"><span>EVENTS</span><strong>
+                        <%= bookings.length %>
+                    </strong><small>in reporting set</small></div>
+                <div class="stat-card"><span>AVG. VALUE</span><strong>
+                        <%= money(bookings.length?Math.round(total/bookings.length):0) %>
+                    </strong><small>per booking</small></div>
+            </div>
+            <div class="panel table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Booking</th>
+                            <th>Venue</th>
+                            <th>Organiser</th>
+                            <th>Date</th>
+                            <th>Hours</th>
+                            <th>Revenue</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% bookings.forEach(b=>{ %><tr>
+                                <td><b>
+                                        <%= b.eventName %>
+                                    </b><small>
+                                        <%= b.bookingCode %>
+                                    </small></td>
+                                <td>
+                                    <%= b.venue.name %>
+                                </td>
+                                <td>
+                                    <%= b.organiser.name %>
+                                </td>
+                                <td>
+                                    <%= dateFmt(b.date) %>
+                                </td>
+                                <td>
+                                    <%= b.durationHours %>
+                                </td>
+                                <td><b>
+                                        <%= money(b.totalAmount) %>
+                                    </b></td>
+                                <td><span class="status <%= b.status %>">
+                                        <%= b.status %>
+                                    </span></td>
+                            </tr>
+                            <%})%>
+                    </tbody>
+                </table>
+            </div>
+        </main><%- include('../partials/footer') %>

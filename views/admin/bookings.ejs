@@ -1,0 +1,75 @@
+<%- include('../partials/header',{title}) %><%- include('../partials/navbar') %>
+        <main class="page">
+            <div class="page-title-row">
+                <div><span class="eyebrow">ADMIN · APPROVAL QUEUE</span>
+                    <h1>Keep every calendar clean.</h1>
+                </div>
+                <div class="filter-tabs"><a class="<%= status==='all'?'active':'' %>" href="/admin/bookings">All</a><a
+                        class="<%= status==='pending'?'active':'' %>"
+                        href="/admin/bookings?status=pending">Pending</a><a
+                        class="<%= status==='approved'?'active':'' %>"
+                        href="/admin/bookings?status=approved">Approved</a><a
+                        class="<%= status==='completed'?'active':'' %>"
+                        href="/admin/bookings?status=completed">Completed</a></div>
+            </div>
+            <div class="admin-booking-list">
+                <% bookings.forEach(b=>{ %><article class="approval-card">
+                        <div class="approval-top">
+                            <div class="date-badge"><b>
+                                    <%= new Date(b.date).getDate() %>
+                                </b><span>
+                                    <%= new Date(b.date).toLocaleString('en',{month:'short'}).toUpperCase() %>
+                                </span></div>
+                            <div><span class="eyebrow">
+                                    <%= b.bookingCode %>
+                                </span>
+                                <h2>
+                                    <%= b.eventName %>
+                                </h2>
+                                <p>
+                                    <%= b.venue.name %> · <%= timeFmt(b.startTime) %>–<%= timeFmt(b.endTime) %> · <%=
+                                                    b.attendees %> guests
+                                </p>
+                            </div><span class="status <%= b.status %>">
+                                <%= b.status %>
+                            </span>
+                        </div>
+                        <div class="approval-meta"><span>Organiser <b>
+                                    <%= b.organiser.name %>
+                                </b></span><span>Estimate <b>
+                                    <%= money(b.totalAmount) %>
+                                </b></span><span>Facilities <b>
+                                    <%= b.facilitiesRequested?.join(', ')||' Standard' %>
+                                </b></span></div>
+                        <% if(b.rejectionReason){%>
+                            <div class="alert danger">Rejection: <%= b.rejectionReason %>
+                            </div>
+                            <%}%>
+                                <div class="approval-actions">
+                                    <% if(b.status==='pending' ){%>
+                                        <form method="post" action="/admin/bookings/<%= b._id %>/approve"><button
+                                                class="btn btn-primary">Approve booking ✓</button></form>
+                                        <form method="post" action="/admin/bookings/<%= b._id %>/reject"
+                                            class="inline-reject"><input name="reason"
+                                                placeholder="Reason for rejection" required><button
+                                                class="btn btn-danger">Reject</button></form>
+                                        <%}%>
+                                            <% if(b.status==='approved' ){%>
+                                                <form method="post" action="/admin/bookings/<%= b._id %>/complete">
+                                                    <button class="btn btn-dark">Mark completed</button></form>
+                                                <form method="post" action="/admin/bookings/<%= b._id %>/cancel"><input
+                                                        type="hidden" name="reason" value="Cancelled by admin"><button
+                                                        class="btn btn-ghost">Cancel</button></form>
+                                                <%}%>
+                                </div>
+                    </article>
+                    <%})%>
+                        <% if(!bookings.length){%>
+                            <div class="empty-state">
+                                <div>✓</div>
+                                <h2>Nothing in this queue.</h2>
+                                <p>That means the calendar is breathing easy.</p>
+                            </div>
+                            <%}%>
+            </div>
+        </main><%- include('../partials/footer') %>

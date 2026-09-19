@@ -1,10 +1,19 @@
 # ✦ Evently — Event & Venue Booking Management System
 
-A full-stack campus/community event and venue booking application built around the supplied reference architecture: **EJS + Node.js + Express.js + MongoDB Atlas + JWT + GitHub-ready MVC structure**.
+Evently is a full-stack campus/community event and venue booking application built with **EJS, Node.js, Express.js, MongoDB Atlas, JWT authentication, and an MVC-style project structure**.
+
+## Live Demo
+
+**Production URL:** https://evently-bice.vercel.app
+
+## Problem Statement
+
+Evently is designed to simplify the process of discovering, checking the availability of, and booking venues for campus and community events. It provides a centralized system for organisers and venue managers to handle venue availability, booking requests, approvals, conflicts, notifications, and event check-ins.
 
 ## What is included
 
 ### Organiser
+
 - Register/login with role-based access
 - Search venues by capacity, facilities, rate and location
 - Natural-language smart search (example: `300 people, projector and AC, under ₹2000`)
@@ -24,6 +33,7 @@ A full-stack campus/community event and venue booking application built around t
 - PDF booking confirmation
 
 ### Admin / Venue Manager
+
 - Venue CRUD
 - Venue gallery and facilities
 - Opening/closing hours and hourly rate
@@ -41,6 +51,7 @@ A full-stack campus/community event and venue booking application built around t
 ## Setup
 
 ### 1. Requirements
+
 - Node.js 18+
 - MongoDB Atlas account/database
 - Git
@@ -104,7 +115,7 @@ views/        EJS server-rendered UI
 public/       CSS + browser JavaScript
 ```
 
-## Important booking rule
+## Important Booking Rule
 
 A slot conflicts when:
 
@@ -116,7 +127,7 @@ requestedEnd > existingStart
 
 The check happens on the **server**, so frontend manipulation cannot create an overlapping booking.
 
-## Smart recommendation logic
+## Smart Recommendation Logic
 
 The Plan B engine scores available venues using:
 
@@ -127,4 +138,9 @@ The Plan B engine scores available venues using:
 It also proposes available time windows for the original venue.
 
 No external AI API is required for the smart-search/recommendation features, keeping the core booking system deterministic and reliable.
-# Evently
+
+## Author
+
+**Anushka Singh**  
+B.Tech CSE (AI/ML)  
+GitHub: [anushkasingh-commits](https://github.com/anushkasingh-commits)

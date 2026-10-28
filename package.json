@@ -1,8 +1,21 @@
 {
-  "name": "event-venue-booking",
-  "version": "1.0.0",
-  "description": "Aesthetic event and venue booking management system for campus/community events.",
+  "name": "evently",
+  "version": "1.1.0",
+  "description": "Evently: an event and venue booking system for campus and community events.",
   "main": "server.js",
+  "author": "Anushka Singh",
+  "keywords": [
+    "event",
+    "venue",
+    "booking",
+    "express",
+    "mongodb",
+    "ejs"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "private": true,
   "scripts": {
     "start": "node server.js",
     "dev": "nodemon server.js",

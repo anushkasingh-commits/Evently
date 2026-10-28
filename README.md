@@ -64,16 +64,21 @@ npm install
 
 ### 3. Configure environment
 
-Copy `.env.example` to `.env` and set:
+Copy `.env.example` to `.env` and fill in your values:
 
-```env
-PORT=3000
-MONGODB_URI=your_mongodb_atlas_connection_string
-JWT_SECRET=a-long-random-secret
-NODE_ENV=development
+```bash
+cp .env.example .env
 ```
 
-SMTP values are optional. If configured, approval/rejection updates can also be emailed.
+| Variable | Required | Purpose |
+| --- | --- | --- |
+| `MONGODB_URI` | Yes | MongoDB Atlas connection string |
+| `JWT_SECRET` | Yes | Secret used to sign login tokens. The server will not start without it. |
+| `PORT` | No | Port to run on (default `3000`) |
+| `NODE_ENV` | No | `development` shows detailed errors. Use `production` when deployed. |
+| `SMTP_*`, `MAIL_FROM` | No | Optional email notifications. Leave empty to turn email off. |
+
+Never commit your real `.env` file.
 
 ### 4. Seed demo data
 
@@ -88,6 +93,8 @@ Demo users:
 
 The seed creates venues, an approved event, a pending request and a maintenance block so the dashboard is populated immediately.
 
+Seeding deletes existing data, so it is blocked when `NODE_ENV` is `production`.
+
 ### 5. Run
 
 ```bash
@@ -101,6 +108,17 @@ npm start
 ```
 
 Open `http://localhost:3000`.
+
+## Reliability and Security
+
+- Bad input (an invalid id, date, time or number) returns a clear message instead of crashing. Known input checks live in `utils/validators.js`.
+- Every route passes unexpected errors to one error handler (`middleware/errorHandler.js`). It logs the full error on the server and shows the user a friendly page. Internal error details are only shown in development.
+- Passwords are hashed with bcrypt. Login tokens are signed with `JWT_SECRET` and stored in HTTP-only cookies.
+- Sign-up always creates an organiser account. Admin accounts are created by the seed script or by an existing admin.
+- After signing in, users return to the page they asked for, but only to pages on this site.
+- Login and sign-up are rate-limited to 50 attempts per 15 minutes per client.
+- Search text is escaped before it is used in a database query.
+- CSV exports protect against spreadsheet formula injection.
 
 ## Architecture
 
@@ -138,6 +156,11 @@ The Plan B engine scores available venues using:
 It also proposes available time windows for the original venue.
 
 No external AI API is required for the smart-search/recommendation features, keeping the core booking system deterministic and reliable.
+
+## Known Limitations
+
+- Two people booking the same slot at the exact same moment can, in rare cases, both get through. Fixing this fully needs database transactions.
+- The app has no CSRF tokens yet, so form submissions rely on the SameSite cookie setting.
 
 ## Author
 

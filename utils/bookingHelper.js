@@ -12,10 +12,10 @@ function sameDay(a, b) { return new Date(a).toISOString().slice(0,10) === new Da
 function overlap(aStart, aEnd, bStart, bEnd) { return minutes(aStart) < minutes(bEnd) && minutes(aEnd) > minutes(bStart); }
 
 async function conflictForSlot({ venueId, date, startTime, endTime, excludeId }) {
-  const bookings = await Booking.find({ venue: venueId, date: new Date(date), status: { $in: ACTIVE_STATUSES }, ...(excludeId ? { _id: { $ne: excludeId } } : {}) }).lean();
+  const bookings = await Booking.find({ venue: venueId, date: normalizeDate(date), status: { $in: ACTIVE_STATUSES }, ...(excludeId ? { _id: { $ne: excludeId } } : {}) }).lean();
   const booking = bookings.find(b => overlap(startTime, endTime, b.startTime, b.endTime));
   if (booking) return { type: 'booking', item: booking };
-  const maintenance = await Maintenance.find({ venue: venueId, date: new Date(date) }).lean();
+  const maintenance = await Maintenance.find({ venue: venueId, date: normalizeDate(date) }).lean();
   const block = maintenance.find(m => overlap(startTime, endTime, m.startTime, m.endTime));
   if (block) return { type: 'maintenance', item: block };
   return null;
@@ -23,8 +23,8 @@ async function conflictForSlot({ venueId, date, startTime, endTime, excludeId })
 
 async function availabilityForDate(venueId, date) {
   const [bookings, maintenance] = await Promise.all([
-    Booking.find({ venue: venueId, date: new Date(date), status: { $in: ACTIVE_STATUSES } }).populate('organiser', 'name').lean(),
-    Maintenance.find({ venue: venueId, date: new Date(date) }).lean()
+    Booking.find({ venue: venueId, date: normalizeDate(date), status: { $in: ACTIVE_STATUSES } }).populate('organiser', 'name').lean(),
+    Maintenance.find({ venue: venueId, date: normalizeDate(date) }).lean()
   ]);
   return { bookings, maintenance };
 }

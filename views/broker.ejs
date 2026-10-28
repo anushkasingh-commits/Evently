@@ -1,0 +1,19 @@
+<%- include('partials/header', { title }) %>
+<%- include('partials/navbar') %>
+<main class="page">
+    <section class="dashboard-hero">
+        <div>
+            <span class="eyebrow">VOICE BROKER</span>
+            <h1>Book a venue <em>by voice.</em></h1>
+            <p>Answer a few questions, hear the best options and their prices, then send a booking request. An admin will approve it.</p>
+        </div>
+    </section>
+
+    <div class="stat-card">
+        <p id="broker-messages">Press the button to start. The broker will ask you a few questions.</p>
+        <button id="mic-button" class="btn btn-primary btn-lg" type="button">Start speaking</button>
+        <small>Works best in Google Chrome. Allow microphone access when your browser asks.</small>
+    </div>
+</main>
+<script src="/js/broker.js"></script>
+<%- include('partials/footer') %>

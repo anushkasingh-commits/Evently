@@ -1,4 +1,14 @@
+# Dependencies
 node_modules/
+
+# Secrets (keep your real .env private; .env.example is safe to commit)
 .env
-.DS_Store
+
+# Logs and test coverage
 npm-debug.log*
+*.log
+coverage/
+
+# Deployment and operating-system files
+.vercel/
+.DS_Store

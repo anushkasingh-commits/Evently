@@ -1,2 +1,33 @@
-const express = require('express'); const c = require('../controllers/adminController'); const u = require('../controllers/userController'); const { requireAuth } = require('../middleware/auth'); const authorize = require('../middleware/authorizeRoles'); const router = express.Router(); router.use('/admin', requireAuth, authorize('admin'));
-router.get('/admin', c.dashboard); router.get('/admin/venues', c.venues); router.post('/admin/venues', c.createVenue); router.post('/admin/venues/:id/update', c.updateVenue); router.post('/admin/venues/:id/archive', c.deleteVenue); router.post('/admin/maintenance', c.addMaintenance); router.post('/admin/maintenance/:id/delete', c.deleteMaintenance); router.get('/admin/bookings', c.bookings); router.post('/admin/bookings/:id/approve', c.approve); router.post('/admin/bookings/:id/reject', c.reject); router.post('/admin/bookings/:id/complete', c.complete); router.post('/admin/bookings/:id/cancel', c.cancel); router.post('/admin/checkin', c.checkin); router.get('/admin/reports', c.reports); router.get('/admin/reports.csv', c.csv); router.get('/notifications', requireAuth, u.notifications); router.post('/notifications/read', requireAuth, u.readNotifications); module.exports = router;
+const express = require('express');
+const adminController = require('../controllers/adminController');
+const { requireAuth } = require('../middleware/auth');
+const authorizeRoles = require('../middleware/authorizeRoles');
+
+const router = express.Router();
+
+// Every /admin route needs a signed-in admin
+router.use('/admin', requireAuth, authorizeRoles('admin'));
+
+router.get('/admin', adminController.dashboard);
+
+// Venues and maintenance
+router.get('/admin/venues', adminController.venues);
+router.post('/admin/venues', adminController.createVenue);
+router.post('/admin/venues/:id/update', adminController.updateVenue);
+router.post('/admin/venues/:id/archive', adminController.deleteVenue);
+router.post('/admin/maintenance', adminController.addMaintenance);
+router.post('/admin/maintenance/:id/delete', adminController.deleteMaintenance);
+
+// Bookings
+router.get('/admin/bookings', adminController.bookings);
+router.post('/admin/bookings/:id/approve', adminController.approve);
+router.post('/admin/bookings/:id/reject', adminController.reject);
+router.post('/admin/bookings/:id/complete', adminController.complete);
+router.post('/admin/bookings/:id/cancel', adminController.cancel);
+router.post('/admin/checkin', adminController.checkin);
+
+// Reports
+router.get('/admin/reports', adminController.reports);
+router.get('/admin/reports.csv', adminController.csv);
+
+module.exports = router;

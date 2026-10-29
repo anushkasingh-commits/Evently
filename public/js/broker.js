@@ -215,6 +215,10 @@ function chooseVenue(heard) {
 // Sends the booking request only after a clear "confirm"
 // Sends the booking request only after a clear "confirm"
 function confirmBooking(heard) {
+  if (stage === 'sending') {
+    return; // Already sending, so ignore any extra speech
+  }
+
   if (heard.includes('cancel')) {
     stage = 'done';
     say('Okay, nothing was booked. Press the button to start again.');
@@ -225,6 +229,9 @@ function confirmBooking(heard) {
     say('Please say confirm, or say cancel.', listen);
     return;
   }
+
+  // Lock first: any further speech is ignored until this request finishes
+  stage = 'sending';
 
   const startTime = twoDigits(booking.startHour) + ':00';
   const endTime = twoDigits(booking.startHour + booking.hours) + ':00';
@@ -287,6 +294,9 @@ if (!recognition) {
 
   // Press once to start. Press again to answer if the broker is not listening.
   micButton.addEventListener('click', function () {
+    if (stage === 'sending') {
+      return; // A request is already being sent, so ignore the button
+    }
     if (stage === 'idle' || stage === 'done') {
       startConversation();
     } else {

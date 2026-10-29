@@ -14,7 +14,7 @@ Evently is designed to simplify the process of discovering, checking the availab
 
 ### Organiser
 
-- Register/login with role-based access
+- Register/login with role-based access 
 - Search venues by capacity, facilities, rate and location
 - Natural-language smart search (example: `300 people, projector and AC, under ₹2000`)
 - Live venue availability calendar
@@ -31,6 +31,7 @@ Evently is designed to simplify the process of discovering, checking the availab
 - In-app notifications
 - QR event pass
 - PDF booking confirmation
+- Voice booking broker: book a venue by speaking, with the organiser confirming before a request is sent
 
 ### Admin / Venue Manager
 
@@ -109,6 +110,24 @@ npm start
 
 Open `http://localhost:3000`.
 
+## Voice Booking Broker
+
+Signed-in organisers can book a venue by voice from the **Voice broker** page (`/broker`).
+
+1. Press **Start speaking**. The broker asks six questions, one at a time: event name, number of guests, date, start hour (24-hour time, for example 18 for 6 PM), number of hours, and maximum budget per hour.
+2. It searches for up to three venues that fit the guest count and budget and are free at that time. It reads each option with its total price.
+3. The organiser says a number to choose a venue, then says **confirm** to send the request or **cancel** to stop.
+4. The request is saved as **pending** and goes through the same booking rules as the normal form, including the overlap checks. An admin approves it on the **Booking approvals** page.
+
+The broker does not confirm a booking itself. It sends a request, and the venue manager approves it.
+
+**Technical notes**
+
+- Speech uses the browser's built-in Web Speech API, so no API key or paid service is needed.
+- Works best in Google Chrome. The microphone only works on `localhost` or an HTTPS address.
+- Dates without a year use the next occurrence. For example, "January 5" said in October means next January.
+- Two supporting routes are used: `GET /api/venues` (venues that fit a request) and `POST /bookings` (the booking itself, which returns JSON when the request asks for it).
+
 ## Reliability and Security
 
 - Bad input (an invalid id, date, time or number) returns a clear message instead of crashing. Known input checks live in `utils/validators.js`.
@@ -161,6 +180,8 @@ No external AI API is required for the smart-search/recommendation features, kee
 
 - Two people booking the same slot at the exact same moment can, in rare cases, both get through. Fixing this fully needs database transactions.
 - The app has no CSRF tokens yet, so form submissions rely on the SameSite cookie setting.
+- Voice booking needs Chrome and a microphone. It may not understand unclear speech or very large numbers such as "five thousand."
+- The broker understands dates that include a month name, such as "November 20." It does not understand phrases such as "next Monday."
 
 ## Author
 
